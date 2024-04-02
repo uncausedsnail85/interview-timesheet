@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import * as client from "../client/timesheetsClient"
 import { FcPlus } from "react-icons/fc";
+import { FaTrashCan } from "react-icons/fa6";
 
 import TimesheetCard from "./TimesheetCard";
 
@@ -21,18 +22,35 @@ function Timesheet() {
         setTestMsg(results);
     }
 
-    // setup timesheets
-    const [timesheets, setTimesheets] = useState([{
-        "id": "",
-        "rate": 3,
-        "userId": 0,
-        "lineItems": [{
-            "date": "2024-04-05",
-            "minutes": 3
-        }],
-        "name": "STORED",
-        "description": "stored"
-    }]);
+    // firebase functions
+    const getAllTimesheets = async () => {
+        try {
+            const response = await client.getAllTimesheets();
+            setTimesheets(response);
+        } catch (err) {
+            // setError(err.response.data.message);
+        }
+    }
+    const createTimesheetinFirebase = async () => {
+        try {
+            const response = await client.createTimesheet(timesheet);
+            return response;
+        } catch (err) {
+            // setError(err.response.data.message);
+        }
+    }
+    const deleteTimesheetInFirebase = async (id) => {
+        try {
+            await client.deleteTimesheet(id);
+            setTimesheets(timesheets.filter(
+                (timesheet) => timesheet.id !== id));
+        } catch (err) {
+            // setError(err.response.data.message);
+        }
+    }
+
+    // setup all timesheets
+    const [timesheets, setTimesheets] = useState([]);
 
     // setup blank timesheet, used for creating new timesheets
     const [timesheet, setTimesheet] = useState({
@@ -43,6 +61,7 @@ function Timesheet() {
         name: "",
         description: ""
     })
+    // dynamic lineItem inside new timesheets
     const [newLineItem, setNewLineItem] = useState({
         date: "",
         minutes: 0
@@ -57,15 +76,16 @@ function Timesheet() {
     }
 
     const addTimesheetToTimesheets = async () => {
-        setTimesheets([...timesheets, timesheet])
+        var newId = await createTimesheetinFirebase(timesheet);
+        setTimesheets([...timesheets, { ...timesheet, id: newId }]);
     }
-
     const calculateTotalMinutes = (lineItems) => {
         return lineItems.reduce((n, { minutes }) => n + minutes, 0);
     }
 
     useEffect(() => {
         fetchTest();
+        getAllTimesheets();
     }, []);
 
     return (
@@ -80,44 +100,55 @@ function Timesheet() {
                         <div class="ts-newtimesheet card" >
                             <div class="card-body">
                                 <fieldset disabled>
-                                    <h6>Name: <input
-                                        value={timesheet.name}
-                                        placeholder="Job Project"
-                                        onChange={(e) => setTimesheet({
-                                            ...timesheet,
-                                            name: e.target.value
-                                        })} /></h6>
+                                    <div class="input-group">
+                                        <span class="input-group-text" >Title </span>
+                                        <input
+                                            className="form-control"
+                                            id="name"
+                                            value={timesheet.name}
+                                            placeholder="Job Project"
+                                            onChange={(e) => setTimesheet({
+                                                ...timesheet,
+                                                name: e.target.value
+                                            })} />
+                                    </div>
                                     <hr />
 
                                     {timesheet.lineItems.map((lineitem) => (
-                                        <div className="w-100">
-                                            Date <input type="date"
+                                        <div className="w-100 input-group">
+                                            <span class="input-group-text" >Date </span>
+                                            <input type="date"
+                                                className="form-control"
                                                 value={lineitem.date}
                                                 onChange={(e) => setNewLineItem({
                                                     ...lineitem,
                                                     date: e.target.value
                                                 })} />
-
-                                            Minutes <input type="number"
+                                            <span class="input-group-text" >Time </span> <input type="number"
+                                                className="form-control"
                                                 value={lineitem.minutes}
                                                 onChange={(e) => setNewLineItem({
                                                     ...lineitem,
                                                     minutes: e.target.value
                                                 })} />
+                                            <span class="input-group-text" >mins </span>
                                         </div>
                                     ))}
 
                                     <hr />
 
-                                    Rate: <input type="number"
-                                        value={timesheet.rate}
-                                        onChange={(e) => setTimesheet({
-                                            ...timesheet,
-                                            rate: e.target.value
-                                        })} /> <br />
-
-                                    total minutes: {calculateTotalMinutes(timesheet.lineItems)} <br />
-                                    total cost: {timesheet.rate * calculateTotalMinutes(timesheet.lineItems)} <br />
+                                    <div className=" input-group">
+                                        <span class="input-group-text" >Rate </span>
+                                        <input type="number"
+                                            value={timesheet.rate}
+                                            onChange={(e) => setTimesheet({
+                                                ...timesheet,
+                                                rate: e.target.value
+                                            })} />
+                                        <span class="input-group-text" >$/ min </span>
+                                    </div>
+                                    Total minutes: {calculateTotalMinutes(timesheet.lineItems)} <br />
+                                    Total cost: {timesheet.rate * calculateTotalMinutes(timesheet.lineItems)} <br />
                                     <label for="description-textarea" class="form-label">description:</label>
                                     <textarea class="form-control" id="description-textarea" rows="1"
                                         value={timesheet.description}
@@ -127,6 +158,8 @@ function Timesheet() {
                                         })} />
                                     <br />
                                 </fieldset >
+                                <button type="button" className="btn btn-danger" onClick={() => deleteTimesheetInFirebase(timesheet.id)}>
+                                    <FaTrashCan /></button>
                             </div>
                         </div>
                     )
@@ -136,51 +169,62 @@ function Timesheet() {
                 <div class="ts-newtimesheet card" >
                     <div class="card-body">
                         new
-                        <h6>Name: <input
-                            value={timesheet.name}
-                            placeholder="Job Project"
-                            onChange={(e) => setTimesheet({
-                                ...timesheet,
-                                name: e.target.value
-                            })} /></h6>
+                        <div class="input-group">
+                            <span class="input-group-text" >Title </span>
+                            <input
+                                className="form-control"
+                                id="name"
+                                value={timesheet.name}
+                                placeholder="Project XYZ"
+                                onChange={(e) => setTimesheet({
+                                    ...timesheet,
+                                    name: e.target.value
+                                })} />
+                        </div>
                         <hr />
 
                         {timesheet.lineItems.map((lineitem) => (
-                            <div className="w-100">
-                                Date <input type="date" disabled
+                            <div className="w-100 input-group">
+                                <span class="input-group-text" >Date </span>
+                                <input type="date"
+                                    className="form-control"
                                     value={lineitem.date}
                                     onChange={(e) => setNewLineItem({
                                         ...lineitem,
                                         date: e.target.value
                                     })} />
-
-                                Minutes <input type="number" disabled
+                                <span class="input-group-text" >Time </span> <input type="number"
+                                    className="form-control"
                                     value={lineitem.minutes}
                                     onChange={(e) => setNewLineItem({
                                         ...lineitem,
                                         minutes: e.target.value
                                     })} />
+                                <span class="input-group-text" >mins </span>
                             </div>
                         ))}
-
-                        <form className="ts-addlineitem">
+                        <div className="ts-addlineitem w-100 input-group">
+                            <span class="input-group-text" >Date </span>
                             <input type="date"
+                                className="form-control"
                                 value={newLineItem.date}
                                 onChange={(e) => setNewLineItem({
                                     ...newLineItem,
                                     date: e.target.value
                                 })} />
-
-                            Minutes <input type="number"
-                                value={newLineItem.minutes}
+                            <span class="input-group-text" >Time </span> <input type="number"
+                                className="form-control"
+                                value={setNewLineItem.minutes}
                                 onChange={(e) => setNewLineItem({
-                                    ...newLineItem,
-                                    minutes: Number(e.target.value)
+                                    ...setNewLineItem,
+                                    minutes: e.target.value
                                 })} />
+                            <span class="input-group-text" >mins </span>
                             <button type="button" class="btn" onClick={addLineItemToTimesheet}>
                                 <FcPlus />
                             </button>
-                        </form>
+                        </div>
+
                         <hr />
 
                         Rate: <input type="number"
@@ -208,9 +252,9 @@ function Timesheet() {
 
             </div>
 
-            timesheet: <pre>{JSON.stringify(timesheet, null, 2)}</pre>
-            newLineItem: <pre>{JSON.stringify(newLineItem, null, 2)}</pre>
-            timesheets: <pre>{JSON.stringify(timesheets, null, 2)}</pre>
+            {/* timesheet: <pre>{JSON.stringify(timesheet, null, 2)}</pre> */}
+            {/* newLineItem: <pre>{JSON.stringify(newLineItem, null, 2)}</pre> */}
+            {/* timesheets: <pre>{JSON.stringify(timesheets, null, 2)}</pre> */}
             {/* <pre>{JSON.stringify(testMsg, null, 2)}</pre> */}
         </>
     )
