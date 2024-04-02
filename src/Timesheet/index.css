@@ -1,0 +1,21 @@
+.ts-newtimesheet {
+    border: solid 1.5px #0275d8;
+    box-shadow: 4px 4px 4px 4px #a0a0a0cc;
+}
+
+.ts-timesheetcard {
+    padding: 8px;
+    margin: 12px;
+    width: 500px;
+}
+
+
+.ts-lineitems {
+    border:1px solid #000000cc;
+    padding: 16px;
+    margin-bottom: 32px;
+}
+
+.ts-title-group {
+    margin-bottom: 16px;
+}

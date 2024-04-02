@@ -5,6 +5,7 @@ import { FcPlus } from "react-icons/fc";
 import { FaTrashCan } from "react-icons/fa6";
 
 import TimesheetCard from "./TimesheetCard";
+import "./index.css";
 
 // Component that displays a timesheet
 function Timesheet() {
@@ -97,10 +98,10 @@ function Timesheet() {
                 {/* STORED TIMESHEET CARDS */}
                 {timesheets.map((timesheet) => {
                     return (
-                        <div class="ts-newtimesheet card" >
+                        <div class="ts-timesheetcard card" >
                             <div class="card-body">
                                 <fieldset disabled>
-                                    <div class="input-group">
+                                    <div class="input-group ts-title-group">
                                         <span class="input-group-text" >Title </span>
                                         <input
                                             className="form-control"
@@ -112,30 +113,33 @@ function Timesheet() {
                                                 name: e.target.value
                                             })} />
                                     </div>
-                                    <hr />
 
-                                    {timesheet.lineItems.map((lineitem) => (
-                                        <div className="w-100 input-group">
-                                            <span class="input-group-text" >Date </span>
-                                            <input type="date"
-                                                className="form-control"
-                                                value={lineitem.date}
-                                                onChange={(e) => setNewLineItem({
-                                                    ...lineitem,
-                                                    date: e.target.value
-                                                })} />
-                                            <span class="input-group-text" >Time </span> <input type="number"
-                                                className="form-control"
-                                                value={lineitem.minutes}
-                                                onChange={(e) => setNewLineItem({
-                                                    ...lineitem,
-                                                    minutes: e.target.value
-                                                })} />
-                                            <span class="input-group-text" >mins </span>
-                                        </div>
-                                    ))}
+                                    <fieldset className="ts-lineitems">
+                                        <legend className="float-none w-auto px-3">Line Items</legend>
 
-                                    <hr />
+                                        {timesheet.lineItems.map((lineitem) => (
+                                            <div className="w-100 input-group mb-2">
+                                                <div className="d-flex">
+                                                    <span class="input-group-text" >Date </span>
+                                                    <input type="date"
+                                                        className="form-control"
+                                                        value={lineitem.date}
+                                                        onChange={(e) => setNewLineItem({
+                                                            ...lineitem,
+                                                            date: e.target.value
+                                                        })} />
+                                                    <span class="input-group-text" >Time </span> <input type="number"
+                                                        className="form-control w-25"
+                                                        value={lineitem.minutes}
+                                                        onChange={(e) => setNewLineItem({
+                                                            ...lineitem,
+                                                            minutes: e.target.value
+                                                        })} />
+                                                    <span class="input-group-text" >mins </span>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </fieldset>
 
                                     <div className=" input-group">
                                         <span class="input-group-text" >Rate </span>
@@ -149,7 +153,7 @@ function Timesheet() {
                                     </div>
                                     Total minutes: {calculateTotalMinutes(timesheet.lineItems)} <br />
                                     Total cost: {timesheet.rate * calculateTotalMinutes(timesheet.lineItems)} <br />
-                                    <label for="description-textarea" class="form-label">description:</label>
+                                    <label for="description-textarea" class="form-label">D  escription:</label>
                                     <textarea class="form-control" id="description-textarea" rows="1"
                                         value={timesheet.description}
                                         onChange={(e) => setTimesheet({
@@ -166,10 +170,10 @@ function Timesheet() {
                 })}
 
                 {/* NEW TIMESHEET CARD */}
-                <div class="ts-newtimesheet card" >
+                <div class="ts-newtimesheet ts-timesheetcard card" >
                     <div class="card-body">
-                        new
-                        <div class="input-group">
+
+                        <div class="input-group ts-title-group">
                             <span class="input-group-text" >Title </span>
                             <input
                                 className="form-control"
@@ -181,69 +185,79 @@ function Timesheet() {
                                     name: e.target.value
                                 })} />
                         </div>
-                        <hr />
 
-                        {timesheet.lineItems.map((lineitem) => (
-                            <div className="w-100 input-group">
-                                <span class="input-group-text" >Date </span>
-                                <input type="date"
-                                    className="form-control"
-                                    value={lineitem.date}
-                                    onChange={(e) => setNewLineItem({
-                                        ...lineitem,
-                                        date: e.target.value
-                                    })} />
-                                <span class="input-group-text" >Time </span> <input type="number"
-                                    className="form-control"
-                                    value={lineitem.minutes}
-                                    onChange={(e) => setNewLineItem({
-                                        ...lineitem,
-                                        minutes: e.target.value
-                                    })} />
-                                <span class="input-group-text" >mins </span>
+                        <fieldset className="ts-lineitems">
+                            <legend className="float-none w-auto px-3">Line Items</legend>
+                            <fieldset disabled>
+                                {timesheet.lineItems.map((lineitem) => (
+                                    <div className="w-100 input-group mb-2">
+                                        <div className="d-flex">
+                                            <span class="input-group-text" >Date </span>
+                                            <input type="date"
+                                                className="form-control"
+                                                value={lineitem.date}
+                                                onChange={(e) => setNewLineItem({
+                                                    ...lineitem,
+                                                    date: e.target.value
+                                                })} />
+                                            <span class="input-group-text ms-2" >Time </span> <input type="number"
+                                                className="form-control w-25"
+                                                value={lineitem.minutes}
+                                                onChange={(e) => setNewLineItem({
+                                                    ...lineitem,
+                                                    minutes: e.target.value
+                                                })} />
+                                            <span class="input-group-text" >mins </span>
+                                        </div>
+                                    </div>
+                                ))}
+                            </fieldset>
+
+                            {/* new line item */}
+                            <div className="ts-addlineitem w-100 input-group mb-2">
+                                <div className="d-flex">
+                                    <span class="input-group-text" >Date </span>
+                                    <input type="date"
+                                        className="form-control"
+                                        value={newLineItem.date}
+                                        onChange={(e) => setNewLineItem({
+                                            ...newLineItem,
+                                            date: e.target.value
+                                        })} />
+                                    <span class="input-group-text" >Time </span> <input type="number"
+                                        className="form-control w-25"
+                                        value={setNewLineItem.minutes}
+                                        onChange={(e) => setNewLineItem({
+                                            ...setNewLineItem,
+                                            minutes: e.target.value
+                                        })} />
+                                    <span class="input-group-text" >mins </span>
+                                    <button type="button" class="btn" onClick={addLineItemToTimesheet}>
+                                        <FcPlus />
+                                    </button>
+                                </div>
                             </div>
-                        ))}
-                        <div className="ts-addlineitem w-100 input-group">
-                            <span class="input-group-text" >Date </span>
-                            <input type="date"
-                                className="form-control"
-                                value={newLineItem.date}
-                                onChange={(e) => setNewLineItem({
-                                    ...newLineItem,
-                                    date: e.target.value
+                        </fieldset>
+
+                        <div className=" input-group">
+                            <span class="input-group-text" >Rate </span>
+                            <input type="number"
+                                value={timesheet.rate}
+                                onChange={(e) => setTimesheet({
+                                    ...timesheet,
+                                    rate: e.target.value
                                 })} />
-                            <span class="input-group-text" >Time </span> <input type="number"
-                                className="form-control"
-                                value={setNewLineItem.minutes}
-                                onChange={(e) => setNewLineItem({
-                                    ...setNewLineItem,
-                                    minutes: e.target.value
-                                })} />
-                            <span class="input-group-text" >mins </span>
-                            <button type="button" class="btn" onClick={addLineItemToTimesheet}>
-                                <FcPlus />
-                            </button>
+                            <span class="input-group-text" >$/ min </span>
                         </div>
-
-                        <hr />
-
-                        Rate: <input type="number"
-                            value={timesheet.rate}
-                            onChange={(e) => setTimesheet({
-                                ...timesheet,
-                                rate: e.target.value
-                            })} /> <br />
-                        total minutes: {calculateTotalMinutes(timesheet.lineItems)} <br />
-                        total cost: {timesheet.rate * calculateTotalMinutes(timesheet.lineItems)} <br />
-                        <label for="description-textarea" class="form-label">description:</label>
-                        <textarea class="form-control" id="description-textarea" rows="1" placeholder="Enter Description"
+                        Total minutes: {calculateTotalMinutes(timesheet.lineItems)} <br />
+                        Total cost: {timesheet.rate * calculateTotalMinutes(timesheet.lineItems)} <br />
+                        <label for="description-textarea" class="form-label ">Description:</label>
+                        <textarea class="form-control" id="description-textarea" rows="1"
                             value={timesheet.description}
                             onChange={(e) => setTimesheet({
                                 ...timesheet,
                                 description: e.target.value
                             })} />
-                        <br />
-
                         <button type="button" className="btn btn-primary" onClick={addTimesheetToTimesheets}>
                             Save
                         </button>
