@@ -152,7 +152,7 @@ function Timesheet() {
                                     </div>
                                     Total minutes: {calculateTotalMinutes(timesheet.lineItems)} <br />
                                     Total cost: {timesheet.rate * calculateTotalMinutes(timesheet.lineItems)} <br />
-                                    <label for="description-textarea" class="form-label">D  escription:</label>
+                                    <label for="description-textarea" class="form-label">Description:</label>
                                     <textarea class="form-control" id="description-textarea" rows="1"
                                         value={timesheet.description}
                                         onChange={(e) => setTimesheet({
@@ -227,8 +227,8 @@ function Timesheet() {
                                         className="form-control w-25 ms-2"
                                         value={setNewLineItem.minutes}
                                         onChange={(e) => setNewLineItem({
-                                            ...setNewLineItem,
-                                            minutes: e.target.value
+                                            ...newLineItem,
+                                            minutes: Number(e.target.value)
                                         })} />
                                     <span class="input-group-text" >mins </span>
                                     <button type="button" class="btn" onClick={addLineItemToTimesheet}>
@@ -265,9 +265,9 @@ function Timesheet() {
 
             </div>
 
-            {/* timesheet: <pre>{JSON.stringify(timesheet, null, 2)}</pre> */}
-            {/* newLineItem: <pre>{JSON.stringify(newLineItem, null, 2)}</pre> */}
-            {/* timesheets: <pre>{JSON.stringify(timesheets, null, 2)}</pre> */}
+            {/* timesheet: <pre>{JSON.stringify(timesheet, null, 2)}</pre>
+            newLineItem: <pre>{JSON.stringify(newLineItem, null, 2)}</pre>
+            timesheets: <pre>{JSON.stringify(timesheets, null, 2)}</pre> */}
             {/* <pre>{JSON.stringify(testMsg, null, 2)}</pre> */}
         </>
     )
