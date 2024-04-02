@@ -91,7 +91,6 @@ function Timesheet() {
 
     return (
         <>
-            <h1>Your timesheets</h1>
 
             <div className="d-flex flex-wrap">
 
@@ -128,8 +127,8 @@ function Timesheet() {
                                                             ...lineitem,
                                                             date: e.target.value
                                                         })} />
-                                                    <span class="input-group-text" >Time </span> <input type="number"
-                                                        className="form-control w-25"
+                                                    <input type="number"
+                                                        className="form-control w-25 ms-2"
                                                         value={lineitem.minutes}
                                                         onChange={(e) => setNewLineItem({
                                                             ...lineitem,
@@ -200,8 +199,8 @@ function Timesheet() {
                                                     ...lineitem,
                                                     date: e.target.value
                                                 })} />
-                                            <span class="input-group-text ms-2" >Time </span> <input type="number"
-                                                className="form-control w-25"
+                                            <input type="number"
+                                                className="form-control w-25 ms-2"
                                                 value={lineitem.minutes}
                                                 onChange={(e) => setNewLineItem({
                                                     ...lineitem,
@@ -224,8 +223,8 @@ function Timesheet() {
                                             ...newLineItem,
                                             date: e.target.value
                                         })} />
-                                    <span class="input-group-text" >Time </span> <input type="number"
-                                        className="form-control w-25"
+                                    <input type="number"
+                                        className="form-control w-25 ms-2"
                                         value={setNewLineItem.minutes}
                                         onChange={(e) => setNewLineItem({
                                             ...setNewLineItem,

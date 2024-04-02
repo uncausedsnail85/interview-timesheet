@@ -5,7 +5,6 @@ import './App.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 import Timesheet from "./Timesheet";
-import Dashbaord from "./Dashboard";
 import Header from "./Header";
 
 function App() {
@@ -14,9 +13,7 @@ function App() {
       <div className="App">
         <Header />
         <Routes>
-          <Route path="/" element={<Navigate to="/dashboard" />} />
-          <Route path="/dashboard" element={<Dashbaord />} />
-          <Route path="/timesheet" element={<Timesheet />} />
+          <Route path="/" element={<Timesheet />} />
         </Routes>
       </div>
     </HashRouter>
