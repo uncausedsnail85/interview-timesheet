@@ -79,6 +79,14 @@ function Timesheet() {
     const addTimesheetToTimesheets = async () => {
         var newId = await createTimesheetinFirebase(timesheet);
         setTimesheets([...timesheets, { ...timesheet, id: newId }]);
+        setTimesheet({
+            id: "",
+            rate: 0,
+            userId: 0,
+            lineItems: [],
+            name: "",
+            description: ""
+        });
     }
     const calculateTotalMinutes = (lineItems) => {
         return lineItems.reduce((n, { minutes }) => n + minutes, 0);
